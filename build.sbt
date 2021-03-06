@@ -1,37 +1,14 @@
-import sbtcrossproject.{crossProject, CrossType}
+val scala3Version = "3.0.0-RC1"
 
-val sharedSettings = Seq(
-  name := "advent-of-code",
-  organization := "org.tritsch",
-  version := "0.1.0-SNAPSHOT",
-
-  scalaVersion in ThisBuild:= "2.11.11"
-)
-
-val jvmSettings = Seq(
-  libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.4",
-  libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.4" % "test",
-  libraryDependencies += "org.scalacheck" %% "scalacheck" % "1.13.4" % "test",
-  libraryDependencies += "com.storm-enroute" %% "scalameter" % "0.9" % "test",
-
-  testFrameworks += new TestFramework(
-    "org.scalameter.ScalaMeterFramework"
-  ),
-
-  scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
-)
-
-val nativeSettings = Seq(
-  nativeMode := "debug",
-  nativeGC := "boehm"
-)
-
-lazy val aoc = crossProject(JVMPlatform, NativePlatform)
-  .crossType(CrossType.Full)
+lazy val root = project
   .in(file("."))
-  .settings(sharedSettings)
-  .jvmSettings(jvmSettings)
-  .nativeSettings(nativeSettings)
-
-lazy val aocJVM = aoc.jvm
-lazy val aocNative = aoc.native
+  .settings(
+    name := "scala3-aoc-2017",
+    version := "0.1.0",
+    scalaVersion := scala3Version,
+    libraryDependencies += "org.scalactic" %% "scalactic" % "3.2.5",
+    libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.5" % "test",
+    libraryDependencies += "org.scalacheck" %% "scalacheck" % "1.15.3" % "test",
+    libraryDependencies += "com.storm-enroute" % "scalameter_2.13" % "0.20" % "test",
+    testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework"),
+  )
