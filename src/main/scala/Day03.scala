@@ -68,16 +68,16 @@ object Day03 {
     )
   } ensuring(_.flatten.size == currentLevelMoves.flatten.size + 8)
 
-  def moves(seed: Moves): Stream[Move] = {
-    def go(ms: Moves): Stream[Move] = ms.flatten.toStream #::: go(nextLevelMoves(ms))
+  def moves(seed: Moves): LazyList[Move] = {
+    def go(ms: Moves): LazyList[Move] = ms.flatten.to(LazyList) #::: go(nextLevelMoves(ms))
     go(seed)
   }
 
   case class Cell(index: Int, value: Int, coordinates: (Int, Int))
 
   object Part1 {
-    def cells(moves: Iterator[Move]): Stream[Cell] = {
-      def go(previousCell: Cell): Stream[Cell] = {
+    def cells(moves: Iterator[Move]): LazyList[Cell] = {
+      def go(previousCell: Cell): LazyList[Cell] = {
         val move = moves.next
 
         val thisCellIndex = previousCell.index + 1
@@ -93,7 +93,7 @@ object Day03 {
     }
 
     def solve(cellValueToFind: Int): (Int, Long) = Util.measuredTimeMillis {
-      val spiral = cells(moves(firstLevelMoves).toIterator)
+      val spiral = cells(moves(firstLevelMoves).iterator)
       val coordinates = spiral.find(c => c.value == cellValueToFind).get.coordinates
       calcManhattenDistance(coordinates)
     }
@@ -120,8 +120,8 @@ object Day03 {
       * around the given cell and for the once that do not exist yet, I am just
       * getting a value of 0).
       */
-    def cells(moves: Iterator[Move]): Stream[Cell] = {
-      def go(previousCell: Cell, valuesSoFar: Map[(Int, Int), Int]): Stream[Cell] = {
+    def cells(moves: Iterator[Move]): LazyList[Cell] = {
+      def go(previousCell: Cell, valuesSoFar: Map[(Int, Int), Int]): LazyList[Cell] = {
         val move = moves.next
 
         val thisCellIndex = previousCell.index + 1
@@ -138,7 +138,7 @@ object Day03 {
     }
 
     def solve(cellValueToFind: Int): (Int, Long) = Util.measuredTimeMillis {
-      val spiral = cells(moves(firstLevelMoves).toIterator)
+      val spiral = cells(moves(firstLevelMoves).iterator)
       spiral.find(c => c.value > cellValueToFind).get.value
     }
 
